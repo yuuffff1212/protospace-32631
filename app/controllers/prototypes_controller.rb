@@ -26,13 +26,13 @@ class PrototypesController < ApplicationController
 
   def edit
     @prototype = Prototype.find(params[:id])
-    unless user_signed_in?
-      redirect_to action: :index
+    unless current_user.id == @prototype.user
+      redirect_to root_path
     end
   end
 
   def update
-    prototype = Prototype.find(params[:id])
+    @prototype = Prototype.find(params[:id])
     if prototype.update(create_params)
       redirect_to prototype_path
     else
@@ -41,7 +41,7 @@ class PrototypesController < ApplicationController
   end
 
   def destroy
-    prototype = Prototype.find(params[:id])
+    @prototype = Prototype.find(params[:id])
     if prototype.delete
       redirect_to root_path
     end
@@ -51,6 +51,7 @@ class PrototypesController < ApplicationController
   def create_params
     params.require(:prototype).permit(:title, :concept, :catch_copy, :image).merge(user_id: current_user.id)
   end
+
 end
 
 #コントローラー、インスタンス変数に値をあげる方法
